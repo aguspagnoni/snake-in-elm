@@ -1,14 +1,9 @@
-[Have fun!](http://liubko.github.io/elm-snake/)
-
-## Run Locally
+Snake game transformed to a Tron Game
+## Run Locally or [Play](http://aguspagnoni.github.io/snake-in-elm/)
 ```bash
-git clone git@github.com:liubko/elm-snake.git
-cd elm-snake
+git clone git@github.com:aguspagnoni/snake-in-elm.git
+cd snake-in-elm
 elm-reactor
 ```
 
-And then open [http://localhost:8000/SnakeGame.elm?debug](http://localhost:8000/SnakeGame.elm?debug) to see it in action!
-
-
-## ToDo
-- true random fruits based on time
+And then open [http://localhost:8000/main.elm](http://localhost:8000/main.elm) to see it in action!
