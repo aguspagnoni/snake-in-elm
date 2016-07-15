@@ -2590,6 +2590,39 @@ var _elm_lang$core$Platform_Sub$none = _elm_lang$core$Platform_Sub$batch(
 var _elm_lang$core$Platform_Sub$map = _elm_lang$core$Native_Platform.map;
 var _elm_lang$core$Platform_Sub$Sub = {ctor: 'Sub'};
 
+var _elm_lang$animation_frame$Native_AnimationFrame = function()
+{
+
+var hasStartTime =
+	window.performance &&
+	window.performance.timing &&
+	window.performance.timing.navigationStart;
+
+var navStart = hasStartTime
+	? window.performance.timing.navigationStart
+	: Date.now();
+
+var rAF = _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+{
+	var id = requestAnimationFrame(function(time) {
+		var timeNow = time
+			? (time > navStart ? time : time + navStart)
+			: Date.now();
+
+		callback(_elm_lang$core$Native_Scheduler.succeed(timeNow));
+	});
+
+	return function() {
+		cancelAnimationFrame(id);
+	};
+});
+
+return {
+	rAF: rAF
+};
+
+}();
+
 var _elm_lang$core$Task$onError = _elm_lang$core$Native_Scheduler.onError;
 var _elm_lang$core$Task$andThen = _elm_lang$core$Native_Scheduler.andThen;
 var _elm_lang$core$Task$spawnCmd = F2(
@@ -4364,6 +4397,150 @@ _elm_lang$core$Native_Platform.effectManagers['Time'] = {pkg: 'elm-lang/core', i
 var _elm_lang$core$Process$kill = _elm_lang$core$Native_Scheduler.kill;
 var _elm_lang$core$Process$sleep = _elm_lang$core$Native_Scheduler.sleep;
 var _elm_lang$core$Process$spawn = _elm_lang$core$Native_Scheduler.spawn;
+
+var _elm_lang$animation_frame$AnimationFrame$rAF = _elm_lang$animation_frame$Native_AnimationFrame.rAF;
+var _elm_lang$animation_frame$AnimationFrame$subscription = _elm_lang$core$Native_Platform.leaf('AnimationFrame');
+var _elm_lang$animation_frame$AnimationFrame$State = F3(
+	function (a, b, c) {
+		return {subs: a, request: b, oldTime: c};
+	});
+var _elm_lang$animation_frame$AnimationFrame$init = _elm_lang$core$Task$succeed(
+	A3(
+		_elm_lang$animation_frame$AnimationFrame$State,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Maybe$Nothing,
+		0));
+var _elm_lang$animation_frame$AnimationFrame$onEffects = F3(
+	function (router, subs, _p0) {
+		var _p1 = _p0;
+		var _p5 = _p1.request;
+		var _p4 = _p1.oldTime;
+		var _p2 = {ctor: '_Tuple2', _0: _p5, _1: subs};
+		if (_p2._0.ctor === 'Nothing') {
+			if (_p2._1.ctor === '[]') {
+				return _elm_lang$core$Task$succeed(
+					A3(
+						_elm_lang$animation_frame$AnimationFrame$State,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Maybe$Nothing,
+						_p4));
+			} else {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					_elm_lang$core$Process$spawn(
+						A2(
+							_elm_lang$core$Task$andThen,
+							_elm_lang$animation_frame$AnimationFrame$rAF,
+							_elm_lang$core$Platform$sendToSelf(router))),
+					function (pid) {
+						return A2(
+							_elm_lang$core$Task$andThen,
+							_elm_lang$core$Time$now,
+							function (time) {
+								return _elm_lang$core$Task$succeed(
+									A3(
+										_elm_lang$animation_frame$AnimationFrame$State,
+										subs,
+										_elm_lang$core$Maybe$Just(pid),
+										time));
+							});
+					});
+			}
+		} else {
+			if (_p2._1.ctor === '[]') {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					_elm_lang$core$Process$kill(_p2._0._0),
+					function (_p3) {
+						return _elm_lang$core$Task$succeed(
+							A3(
+								_elm_lang$animation_frame$AnimationFrame$State,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Maybe$Nothing,
+								_p4));
+					});
+			} else {
+				return _elm_lang$core$Task$succeed(
+					A3(_elm_lang$animation_frame$AnimationFrame$State, subs, _p5, _p4));
+			}
+		}
+	});
+var _elm_lang$animation_frame$AnimationFrame$onSelfMsg = F3(
+	function (router, newTime, _p6) {
+		var _p7 = _p6;
+		var _p10 = _p7.subs;
+		var diff = newTime - _p7.oldTime;
+		var send = function (sub) {
+			var _p8 = sub;
+			if (_p8.ctor === 'Time') {
+				return A2(
+					_elm_lang$core$Platform$sendToApp,
+					router,
+					_p8._0(newTime));
+			} else {
+				return A2(
+					_elm_lang$core$Platform$sendToApp,
+					router,
+					_p8._0(diff));
+			}
+		};
+		return A2(
+			_elm_lang$core$Task$andThen,
+			_elm_lang$core$Process$spawn(
+				A2(
+					_elm_lang$core$Task$andThen,
+					_elm_lang$animation_frame$AnimationFrame$rAF,
+					_elm_lang$core$Platform$sendToSelf(router))),
+			function (pid) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					_elm_lang$core$Task$sequence(
+						A2(_elm_lang$core$List$map, send, _p10)),
+					function (_p9) {
+						return _elm_lang$core$Task$succeed(
+							A3(
+								_elm_lang$animation_frame$AnimationFrame$State,
+								_p10,
+								_elm_lang$core$Maybe$Just(pid),
+								newTime));
+					});
+			});
+	});
+var _elm_lang$animation_frame$AnimationFrame$Diff = function (a) {
+	return {ctor: 'Diff', _0: a};
+};
+var _elm_lang$animation_frame$AnimationFrame$diffs = function (tagger) {
+	return _elm_lang$animation_frame$AnimationFrame$subscription(
+		_elm_lang$animation_frame$AnimationFrame$Diff(tagger));
+};
+var _elm_lang$animation_frame$AnimationFrame$Time = function (a) {
+	return {ctor: 'Time', _0: a};
+};
+var _elm_lang$animation_frame$AnimationFrame$times = function (tagger) {
+	return _elm_lang$animation_frame$AnimationFrame$subscription(
+		_elm_lang$animation_frame$AnimationFrame$Time(tagger));
+};
+var _elm_lang$animation_frame$AnimationFrame$subMap = F2(
+	function (func, sub) {
+		var _p11 = sub;
+		if (_p11.ctor === 'Time') {
+			return _elm_lang$animation_frame$AnimationFrame$Time(
+				function (_p12) {
+					return func(
+						_p11._0(_p12));
+				});
+		} else {
+			return _elm_lang$animation_frame$AnimationFrame$Diff(
+				function (_p13) {
+					return func(
+						_p11._0(_p13));
+				});
+		}
+	});
+_elm_lang$core$Native_Platform.effectManagers['AnimationFrame'] = {pkg: 'elm-lang/animation-frame', init: _elm_lang$animation_frame$AnimationFrame$init, onEffects: _elm_lang$animation_frame$AnimationFrame$onEffects, onSelfMsg: _elm_lang$animation_frame$AnimationFrame$onSelfMsg, tag: 'sub', subMap: _elm_lang$animation_frame$AnimationFrame$subMap};
 
 //import Native.List //
 
@@ -11120,23 +11297,28 @@ var _evancz$elm_graphics$Collage$ngon = F2(
 				_elm_lang$core$Native_List.range(0, m - 1)));
 	});
 
+var _liubko$elm_snake$Main$shortName = function (s) {
+	return _elm_lang$core$String$toUpper(
+		A3(_elm_lang$core$String$slice, 0, 1, s));
+};
 var _liubko$elm_snake$Main$textColor = A3(_elm_lang$core$Color$rgb, 90, 120, 127);
 var _liubko$elm_snake$Main$borderColor = A3(_elm_lang$core$Color$rgb, 88, 80, 79);
 var _liubko$elm_snake$Main$fieldColor = A3(_elm_lang$core$Color$rgb, 234, 247, 196);
-var _liubko$elm_snake$Main$txt = function (msg) {
-	return _evancz$elm_graphics$Collage$toForm(
-		_evancz$elm_graphics$Element$centered(
-			_evancz$elm_graphics$Text$monospace(
-				A2(
-					_evancz$elm_graphics$Text$color,
-					_liubko$elm_snake$Main$textColor,
-					_evancz$elm_graphics$Text$fromString(msg)))));
-};
+var _liubko$elm_snake$Main$txt = F2(
+	function (msg, color) {
+		return _evancz$elm_graphics$Collage$toForm(
+			_evancz$elm_graphics$Element$centered(
+				_evancz$elm_graphics$Text$monospace(
+					A2(
+						_evancz$elm_graphics$Text$color,
+						color,
+						_evancz$elm_graphics$Text$fromString(msg)))));
+	});
 var _liubko$elm_snake$Main$pos = F2(
 	function (v0, v1) {
 		return {ctor: '_Tuple2', _0: v0, _1: v1};
 	});
-var _liubko$elm_snake$Main$_p0 = {ctor: '_Tuple2', _0: 1000, _1: 1000};
+var _liubko$elm_snake$Main$_p0 = {ctor: '_Tuple2', _0: 800, _1: 600};
 var _liubko$elm_snake$Main$width = _liubko$elm_snake$Main$_p0._0;
 var _liubko$elm_snake$Main$height = _liubko$elm_snake$Main$_p0._1;
 var _liubko$elm_snake$Main$segmentDim = 15;
@@ -11172,14 +11354,24 @@ var _liubko$elm_snake$Main$view = function (model) {
 		if (_p1.ctor === 'NotStarted') {
 			var _p2 = _p1._0;
 			var announceWinner = _elm_lang$core$Native_Utils.eq(_p2, '') ? '' : A2(_elm_lang$core$Basics_ops['++'], 'The winner is: ', _p2);
-			var wholeText = A2(_elm_lang$core$Basics_ops['++'], announceWinner, 'press SPACE to start');
+			var wholeText = A2(
+				_elm_lang$core$Basics_ops['++'],
+				announceWinner,
+				A2(_elm_lang$core$Basics_ops['++'], '\npress SPACE to start', '\n\n Controls: \n P1: a,w,d,s\n P2: j,i,l,k'));
 			return _elm_lang$core$Native_List.fromArray(
 				[
-					_liubko$elm_snake$Main$txt(wholeText)
+					A2(_liubko$elm_snake$Main$txt, wholeText, _liubko$elm_snake$Main$textColor)
 				]);
 		} else {
 			var _p4 = _p1._0._1;
 			var _p3 = _p1._0._0;
+			var p2char = A2(
+				_evancz$elm_graphics$Collage$move,
+				_p4.head,
+				A2(
+					_liubko$elm_snake$Main$txt,
+					_liubko$elm_snake$Main$shortName(_p4.name),
+					_elm_lang$core$Color$white));
 			var p2tail = A2(
 				_elm_lang$core$List$map,
 				function (pos) {
@@ -11188,7 +11380,7 @@ var _liubko$elm_snake$Main$view = function (model) {
 						pos,
 						A2(
 							_evancz$elm_graphics$Collage$filled,
-							_elm_lang$core$Color$green,
+							_elm_lang$core$Color$red,
 							A2(_evancz$elm_graphics$Collage$rect, _liubko$elm_snake$Main$segmentDim, _liubko$elm_snake$Main$segmentDim)));
 				},
 				_p4.tail);
@@ -11197,8 +11389,15 @@ var _liubko$elm_snake$Main$view = function (model) {
 				_p4.head,
 				A2(
 					_evancz$elm_graphics$Collage$filled,
-					_elm_lang$core$Color$white,
+					_elm_lang$core$Color$red,
 					A2(_evancz$elm_graphics$Collage$rect, _liubko$elm_snake$Main$segmentDim, _liubko$elm_snake$Main$segmentDim)));
+			var p1char = A2(
+				_evancz$elm_graphics$Collage$move,
+				_p3.head,
+				A2(
+					_liubko$elm_snake$Main$txt,
+					_liubko$elm_snake$Main$shortName(_p3.name),
+					_elm_lang$core$Color$white));
 			var p1tail = A2(
 				_elm_lang$core$List$map,
 				function (pos) {
@@ -11216,19 +11415,19 @@ var _liubko$elm_snake$Main$view = function (model) {
 				_p3.head,
 				A2(
 					_evancz$elm_graphics$Collage$filled,
-					_elm_lang$core$Color$white,
+					_elm_lang$core$Color$green,
 					A2(_evancz$elm_graphics$Collage$rect, _liubko$elm_snake$Main$segmentDim, _liubko$elm_snake$Main$segmentDim)));
 			return A2(
 				_elm_lang$core$Basics_ops['++'],
 				_elm_lang$core$Native_List.fromArray(
-					[p1head]),
+					[p1head, p1char]),
 				A2(
 					_elm_lang$core$Basics_ops['++'],
 					p1tail,
 					A2(
 						_elm_lang$core$Basics_ops['++'],
 						_elm_lang$core$Native_List.fromArray(
-							[p2head]),
+							[p2head, p2char]),
 						p2tail)));
 		}
 	}();
@@ -11284,15 +11483,14 @@ var _liubko$elm_snake$Main$Left = {ctor: 'Left'};
 var _liubko$elm_snake$Main$Down = {ctor: 'Down'};
 var _liubko$elm_snake$Main$initPlayer = F2(
 	function (name, iniPos) {
-		var tail = A2(
-			_elm_lang$core$List$map,
-			function (n) {
-				return A2(_liubko$elm_snake$Main$pos, (0 - n) * _liubko$elm_snake$Main$segmentDim, 0);
-			},
-			_elm_lang$core$Native_List.fromArray(
-				[1]));
 		var head = iniPos;
-		return {head: head, tail: tail, direction: _liubko$elm_snake$Main$Down, name: name};
+		return {
+			head: head,
+			tail: _elm_lang$core$Native_List.fromArray(
+				[]),
+			direction: _liubko$elm_snake$Main$Down,
+			name: name
+		};
 	});
 var _liubko$elm_snake$Main$Up = {ctor: 'Up'};
 var _liubko$elm_snake$Main$getNewDirection = F2(
@@ -11413,11 +11611,17 @@ var _liubko$elm_snake$Main$update = F2(
 							_0: A2(
 								_liubko$elm_snake$Main$initPlayer,
 								'agulo',
-								A2(_liubko$elm_snake$Main$pos, 2, 0)),
+								A2(
+									_liubko$elm_snake$Main$pos,
+									_elm_lang$core$Basics$toFloat(4) * _liubko$elm_snake$Main$segmentDim,
+									0)),
 							_1: A2(
 								_liubko$elm_snake$Main$initPlayer,
 								'gabo',
-								A2(_liubko$elm_snake$Main$pos, -2, 0))
+								A2(
+									_liubko$elm_snake$Main$pos,
+									_elm_lang$core$Basics$toFloat(-4) * _liubko$elm_snake$Main$segmentDim,
+									0))
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -11461,11 +11665,11 @@ var _liubko$elm_snake$Main$update = F2(
 				var gameOver2 = A2(_liubko$elm_snake$Main$isGameOver, p2$, p1$);
 				return gameOver1 ? {
 					ctor: '_Tuple2',
-					_0: _liubko$elm_snake$Main$NotStarted(p1$.name),
+					_0: _liubko$elm_snake$Main$NotStarted(p2$.name),
 					_1: _elm_lang$core$Platform_Cmd$none
 				} : (gameOver2 ? {
 					ctor: '_Tuple2',
-					_0: _liubko$elm_snake$Main$NotStarted(p2$.name),
+					_0: _liubko$elm_snake$Main$NotStarted(p1$.name),
 					_1: _elm_lang$core$Platform_Cmd$none
 				} : {
 					ctor: '_Tuple2',
@@ -11491,7 +11695,10 @@ var _liubko$elm_snake$Main$subscriptions = function (model) {
 			_elm_lang$core$Native_List.fromArray(
 				[
 					_elm_lang$keyboard$Keyboard$presses(_liubko$elm_snake$Main$KeyPress),
-					A2(_elm_lang$core$Time$every, _elm_lang$core$Time$second, _liubko$elm_snake$Main$Tick)
+					A2(
+					_elm_lang$core$Time$every,
+					_elm_lang$core$Time$inMilliseconds(100),
+					_liubko$elm_snake$Main$Tick)
 				]));
 	}
 };
