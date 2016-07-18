@@ -31,6 +31,11 @@ type Direction
   | Left
   | Right
 
+type Difficulty
+  = Easy
+  | Medium
+  | Hard
+
 type alias Position = (Float, Float)
 
 pos : Float -> Float -> Position
@@ -44,7 +49,7 @@ type alias Player =
 
 type Model
   = NotStarted String
-  | Started (Player, Player)
+  | Started Difficulty (Player, Player)
 
 -- step 2: define Msg that can trigger updates to Model
 type Msg
@@ -67,11 +72,18 @@ subscriptions model =
     NotStarted _ ->
       Keyboard.presses KeyPress
 
-    Started (_,_) ->
+    Started difficulty (_,_) ->
       Sub.batch
         [ Keyboard.presses KeyPress
-        , Time.every (Time.inMilliseconds 100) Tick --Time.every (Time.inMilliseconds 50) Tick
+        , Time.every (Time.inMilliseconds (speedFor difficulty)) Tick --Time.every (Time.inMilliseconds 50) Tick
         ]
+
+speedFor : Difficulty -> Float
+speedFor difficulty =
+  case difficulty of
+    Easy -> 100.0
+    Medium -> 50.0
+    Hard -> 30.0
 
 -- step 5: how to render your model
 view : Model -> Html Msg
@@ -80,13 +92,13 @@ view model =
       border = rect (toFloat width) (toFloat height) |> outlined { defaultLine | width = borderSize, color = black}
       content =
         case model of
-          NotStarted winner ->
+          NotStarted winner  ->
             let
               announceWinner = if winner == "" then "" else "The winner is: " ++ winner
-              wholeText = announceWinner ++ "\npress SPACE to start" ++ "\n\n Controls: \n P1: a,w,d,s\n P2: j,i,l,k"
+              wholeText = announceWinner ++ "\npress 1,2 or 3 to start with different difficulties" ++ "\n\n Controls: \n P1: a,w,d,s\n P2: j,i,l,k"
             in [txt wholeText textColor]
 
-          Started (p1, p2) ->
+          Started _ (p1, p2) ->
             let
               p1head = rect segmentDim segmentDim |> filled green |> move p1.head
               p1tail = p1.tail |> List.map (\pos -> rect segmentDim segmentDim |> filled green |> move pos)
@@ -105,20 +117,23 @@ update msg model =
   case model of
     NotStarted _->
       case msg of
-        KeyPress 32 ->
-          (Started ((initPlayer "agulo" (pos (toFloat 4*segmentDim) 0)), (initPlayer "gabo" (pos (toFloat -4*segmentDim) 0))), Cmd.none)
-
+        KeyPress keyCode ->
+          case Char.fromCode keyCode of
+            '1' -> startGameWithDifficulty Easy
+            '2' -> startGameWithDifficulty Medium
+            '3' -> startGameWithDifficulty Hard
+            _   -> (model, Cmd.none)
         _ ->
           (model, Cmd.none)
 
-    Started (p1,p2) ->
+    Started difficulty (p1,p2) ->
       case msg of
         KeyPress keyCode ->
           let (newDir, player) = getNewDirection keyCode (p1,p2)
               newPlayer = { player | direction=newDir }
               p1New = if player.head == p1.head then newPlayer else p1
               p2New = if player.head == p2.head then newPlayer else p2
-          in (Started (p1New, p2New), Cmd.none)
+          in (Started difficulty (p1New, p2New), Cmd.none)
         Tick _ ->
           let newHead1 = getNewSegment p1.head p1.direction
               newHead2 = getNewSegment p2.head p2.direction
@@ -133,7 +148,16 @@ update msg model =
              else if gameOver2 then
               (NotStarted p1'.name, Cmd.none)
              else
-              (Started (p1', p2'), Cmd.none)
+              (Started difficulty (p1', p2'), Cmd.none)
+
+startGameWithDifficulty : Difficulty -> (Model, Cmd Msg)
+startGameWithDifficulty difficulty =
+  (Started difficulty
+    (
+      (initPlayer "1st player" (pos (toFloat 4*segmentDim) 0)),
+      (initPlayer "2nd player" (pos (toFloat -4*segmentDim) 0))),
+      Cmd.none
+    )
 
 txt : String -> Color -> Form
 txt msg color =
@@ -179,9 +203,9 @@ getNewSegment (x, y) direction =
 isGameOver : Player -> Player -> Bool
 isGameOver p1 p2 =
   List.any ((==) p1.head) (p1.tail++[p2.head]++p2.tail)   -- eat itself or other player
-  || fst p1.head > (-borderSize + width / 2)              -- hit right
+  || fst p1.head > (width / 2)              -- hit right
   || snd p1.head > (-borderSize + height / 2)             -- hit top
-  || fst p1.head < (borderSize-width / 2)                 -- hit left
+  || fst p1.head < (-width / 2)                 -- hit left
   || snd p1.head < (borderSize-height / 2)                -- hit bottom
 
 shortName : String -> String

@@ -11314,13 +11314,24 @@ var _aguspagnoni$snake_in_elm$Main$txt = F2(
 						color,
 						_evancz$elm_graphics$Text$fromString(msg)))));
 	});
+var _aguspagnoni$snake_in_elm$Main$speedFor = function (difficulty) {
+	var _p0 = difficulty;
+	switch (_p0.ctor) {
+		case 'Easy':
+			return 100.0;
+		case 'Medium':
+			return 50.0;
+		default:
+			return 30.0;
+	}
+};
 var _aguspagnoni$snake_in_elm$Main$pos = F2(
 	function (v0, v1) {
 		return {ctor: '_Tuple2', _0: v0, _1: v1};
 	});
-var _aguspagnoni$snake_in_elm$Main$_p0 = {ctor: '_Tuple2', _0: 800, _1: 600};
-var _aguspagnoni$snake_in_elm$Main$width = _aguspagnoni$snake_in_elm$Main$_p0._0;
-var _aguspagnoni$snake_in_elm$Main$height = _aguspagnoni$snake_in_elm$Main$_p0._1;
+var _aguspagnoni$snake_in_elm$Main$_p1 = {ctor: '_Tuple2', _0: 800, _1: 600};
+var _aguspagnoni$snake_in_elm$Main$width = _aguspagnoni$snake_in_elm$Main$_p1._0;
+var _aguspagnoni$snake_in_elm$Main$height = _aguspagnoni$snake_in_elm$Main$_p1._1;
 var _aguspagnoni$snake_in_elm$Main$segmentDim = 15;
 var _aguspagnoni$snake_in_elm$Main$borderSize = _aguspagnoni$snake_in_elm$Main$segmentDim;
 var _aguspagnoni$snake_in_elm$Main$isGameOver = F2(
@@ -11350,10 +11361,10 @@ var _aguspagnoni$snake_in_elm$Main$isGameOver = F2(
 	});
 var _aguspagnoni$snake_in_elm$Main$view = function (model) {
 	var content = function () {
-		var _p1 = model;
-		if (_p1.ctor === 'NotStarted') {
-			var _p2 = _p1._0;
-			var announceWinner = _elm_lang$core$Native_Utils.eq(_p2, '') ? '' : A2(_elm_lang$core$Basics_ops['++'], 'The winner is: ', _p2);
+		var _p2 = model;
+		if (_p2.ctor === 'NotStarted') {
+			var _p3 = _p2._0;
+			var announceWinner = _elm_lang$core$Native_Utils.eq(_p3, '') ? '' : A2(_elm_lang$core$Basics_ops['++'], 'The winner is: ', _p3);
 			var wholeText = A2(
 				_elm_lang$core$Basics_ops['++'],
 				announceWinner,
@@ -11363,14 +11374,14 @@ var _aguspagnoni$snake_in_elm$Main$view = function (model) {
 					A2(_aguspagnoni$snake_in_elm$Main$txt, wholeText, _aguspagnoni$snake_in_elm$Main$textColor)
 				]);
 		} else {
-			var _p4 = _p1._0._1;
-			var _p3 = _p1._0._0;
+			var _p5 = _p2._1._1;
+			var _p4 = _p2._1._0;
 			var p2char = A2(
 				_evancz$elm_graphics$Collage$move,
-				_p4.head,
+				_p5.head,
 				A2(
 					_aguspagnoni$snake_in_elm$Main$txt,
-					_aguspagnoni$snake_in_elm$Main$shortName(_p4.name),
+					_aguspagnoni$snake_in_elm$Main$shortName(_p5.name),
 					_elm_lang$core$Color$white));
 			var p2tail = A2(
 				_elm_lang$core$List$map,
@@ -11383,20 +11394,20 @@ var _aguspagnoni$snake_in_elm$Main$view = function (model) {
 							_elm_lang$core$Color$red,
 							A2(_evancz$elm_graphics$Collage$rect, _aguspagnoni$snake_in_elm$Main$segmentDim, _aguspagnoni$snake_in_elm$Main$segmentDim)));
 				},
-				_p4.tail);
+				_p5.tail);
 			var p2head = A2(
 				_evancz$elm_graphics$Collage$move,
-				_p4.head,
+				_p5.head,
 				A2(
 					_evancz$elm_graphics$Collage$filled,
 					_elm_lang$core$Color$red,
 					A2(_evancz$elm_graphics$Collage$rect, _aguspagnoni$snake_in_elm$Main$segmentDim, _aguspagnoni$snake_in_elm$Main$segmentDim)));
 			var p1char = A2(
 				_evancz$elm_graphics$Collage$move,
-				_p3.head,
+				_p4.head,
 				A2(
 					_aguspagnoni$snake_in_elm$Main$txt,
-					_aguspagnoni$snake_in_elm$Main$shortName(_p3.name),
+					_aguspagnoni$snake_in_elm$Main$shortName(_p4.name),
 					_elm_lang$core$Color$white));
 			var p1tail = A2(
 				_elm_lang$core$List$map,
@@ -11409,10 +11420,10 @@ var _aguspagnoni$snake_in_elm$Main$view = function (model) {
 							_elm_lang$core$Color$green,
 							A2(_evancz$elm_graphics$Collage$rect, _aguspagnoni$snake_in_elm$Main$segmentDim, _aguspagnoni$snake_in_elm$Main$segmentDim)));
 				},
-				_p3.tail);
+				_p4.tail);
 			var p1head = A2(
 				_evancz$elm_graphics$Collage$move,
-				_p3.head,
+				_p4.head,
 				A2(
 					_evancz$elm_graphics$Collage$filled,
 					_elm_lang$core$Color$green,
@@ -11458,20 +11469,20 @@ var _aguspagnoni$snake_in_elm$Main$view = function (model) {
 				A2(_elm_lang$core$List_ops['::'], border, content))));
 };
 var _aguspagnoni$snake_in_elm$Main$getNewSegment = F2(
-	function (_p5, direction) {
-		var _p6 = _p5;
-		var _p9 = _p6._1;
-		var _p8 = _p6._0;
-		var _p7 = direction;
-		switch (_p7.ctor) {
+	function (_p6, direction) {
+		var _p7 = _p6;
+		var _p10 = _p7._1;
+		var _p9 = _p7._0;
+		var _p8 = direction;
+		switch (_p8.ctor) {
 			case 'Up':
-				return A2(_aguspagnoni$snake_in_elm$Main$pos, _p8, _p9 + _aguspagnoni$snake_in_elm$Main$segmentDim);
+				return A2(_aguspagnoni$snake_in_elm$Main$pos, _p9, _p10 + _aguspagnoni$snake_in_elm$Main$segmentDim);
 			case 'Down':
-				return A2(_aguspagnoni$snake_in_elm$Main$pos, _p8, _p9 - _aguspagnoni$snake_in_elm$Main$segmentDim);
+				return A2(_aguspagnoni$snake_in_elm$Main$pos, _p9, _p10 - _aguspagnoni$snake_in_elm$Main$segmentDim);
 			case 'Left':
-				return A2(_aguspagnoni$snake_in_elm$Main$pos, _p8 - _aguspagnoni$snake_in_elm$Main$segmentDim, _p9);
+				return A2(_aguspagnoni$snake_in_elm$Main$pos, _p9 - _aguspagnoni$snake_in_elm$Main$segmentDim, _p10);
 			default:
-				return A2(_aguspagnoni$snake_in_elm$Main$pos, _p8 + _aguspagnoni$snake_in_elm$Main$segmentDim, _p9);
+				return A2(_aguspagnoni$snake_in_elm$Main$pos, _p9 + _aguspagnoni$snake_in_elm$Main$segmentDim, _p10);
 		}
 	});
 var _aguspagnoni$snake_in_elm$Main$Player = F4(
@@ -11494,20 +11505,20 @@ var _aguspagnoni$snake_in_elm$Main$initPlayer = F2(
 	});
 var _aguspagnoni$snake_in_elm$Main$Up = {ctor: 'Up'};
 var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
-	function (keyCode, _p10) {
-		var _p11 = _p10;
-		var _p15 = _p11._1;
-		var _p14 = _p11._0;
-		var _p12 = function () {
-			var _p13 = _elm_lang$core$Char$fromCode(keyCode);
-			switch (_p13.valueOf()) {
+	function (keyCode, _p11) {
+		var _p12 = _p11;
+		var _p16 = _p12._1;
+		var _p15 = _p12._0;
+		var _p13 = function () {
+			var _p14 = _elm_lang$core$Char$fromCode(keyCode);
+			switch (_p14.valueOf()) {
 				case 'a':
 					return {
 						ctor: '_Tuple3',
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Up, _aguspagnoni$snake_in_elm$Main$Down]),
 						_1: _aguspagnoni$snake_in_elm$Main$Left,
-						_2: _p14
+						_2: _p15
 					};
 				case 'w':
 					return {
@@ -11515,7 +11526,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Left, _aguspagnoni$snake_in_elm$Main$Right]),
 						_1: _aguspagnoni$snake_in_elm$Main$Up,
-						_2: _p14
+						_2: _p15
 					};
 				case 'd':
 					return {
@@ -11523,7 +11534,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Up, _aguspagnoni$snake_in_elm$Main$Down]),
 						_1: _aguspagnoni$snake_in_elm$Main$Right,
-						_2: _p14
+						_2: _p15
 					};
 				case 's':
 					return {
@@ -11531,7 +11542,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Left, _aguspagnoni$snake_in_elm$Main$Right]),
 						_1: _aguspagnoni$snake_in_elm$Main$Down,
-						_2: _p14
+						_2: _p15
 					};
 				case 'j':
 					return {
@@ -11539,7 +11550,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Up, _aguspagnoni$snake_in_elm$Main$Down]),
 						_1: _aguspagnoni$snake_in_elm$Main$Left,
-						_2: _p15
+						_2: _p16
 					};
 				case 'i':
 					return {
@@ -11547,7 +11558,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Left, _aguspagnoni$snake_in_elm$Main$Right]),
 						_1: _aguspagnoni$snake_in_elm$Main$Up,
-						_2: _p15
+						_2: _p16
 					};
 				case 'l':
 					return {
@@ -11555,7 +11566,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Up, _aguspagnoni$snake_in_elm$Main$Down]),
 						_1: _aguspagnoni$snake_in_elm$Main$Right,
-						_2: _p15
+						_2: _p16
 					};
 				case 'k':
 					return {
@@ -11563,21 +11574,21 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Left, _aguspagnoni$snake_in_elm$Main$Right]),
 						_1: _aguspagnoni$snake_in_elm$Main$Down,
-						_2: _p15
+						_2: _p16
 					};
 				default:
 					return {
 						ctor: '_Tuple3',
 						_0: _elm_lang$core$Native_List.fromArray(
 							[]),
-						_1: _p14.direction,
-						_2: _p14
+						_1: _p15.direction,
+						_2: _p15
 					};
 			}
 		}();
-		var changeableDirs = _p12._0;
-		var newDir = _p12._1;
-		var playerTriggered = _p12._2;
+		var changeableDirs = _p13._0;
+		var newDir = _p13._1;
+		var playerTriggered = _p13._2;
 		return A2(
 			_elm_lang$core$List$any,
 			F2(
@@ -11586,8 +11597,38 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 				})(playerTriggered.direction),
 			changeableDirs) ? {ctor: '_Tuple2', _0: newDir, _1: playerTriggered} : {ctor: '_Tuple2', _0: playerTriggered.direction, _1: playerTriggered};
 	});
-var _aguspagnoni$snake_in_elm$Main$Started = function (a) {
-	return {ctor: 'Started', _0: a};
+var _aguspagnoni$snake_in_elm$Main$Hard = {ctor: 'Hard'};
+var _aguspagnoni$snake_in_elm$Main$Medium = {ctor: 'Medium'};
+var _aguspagnoni$snake_in_elm$Main$Easy = {ctor: 'Easy'};
+var _aguspagnoni$snake_in_elm$Main$Started = F2(
+	function (a, b) {
+		return {ctor: 'Started', _0: a, _1: b};
+	});
+var _aguspagnoni$snake_in_elm$Main$startGameWithDifficulty = function (difficulty) {
+	return {
+		ctor: '_Tuple2',
+		_0: A2(
+			_aguspagnoni$snake_in_elm$Main$Started,
+			difficulty,
+			{
+				ctor: '_Tuple2',
+				_0: A2(
+					_aguspagnoni$snake_in_elm$Main$initPlayer,
+					'P1',
+					A2(
+						_aguspagnoni$snake_in_elm$Main$pos,
+						_elm_lang$core$Basics$toFloat(4) * _aguspagnoni$snake_in_elm$Main$segmentDim,
+						0)),
+				_1: A2(
+					_aguspagnoni$snake_in_elm$Main$initPlayer,
+					'P2',
+					A2(
+						_aguspagnoni$snake_in_elm$Main$pos,
+						_elm_lang$core$Basics$toFloat(-4) * _aguspagnoni$snake_in_elm$Main$segmentDim,
+						0))
+			}),
+		_1: _elm_lang$core$Platform_Cmd$none
+	};
 };
 var _aguspagnoni$snake_in_elm$Main$NotStarted = function (a) {
 	return {ctor: 'NotStarted', _0: a};
@@ -11599,67 +11640,59 @@ var _aguspagnoni$snake_in_elm$Main$init = {
 };
 var _aguspagnoni$snake_in_elm$Main$update = F2(
 	function (msg, model) {
-		var _p16 = model;
-		if (_p16.ctor === 'NotStarted') {
-			var _p17 = msg;
-			if ((_p17.ctor === 'KeyPress') && (_p17._0 === 32)) {
-				return {
-					ctor: '_Tuple2',
-					_0: _aguspagnoni$snake_in_elm$Main$Started(
-						{
-							ctor: '_Tuple2',
-							_0: A2(
-								_aguspagnoni$snake_in_elm$Main$initPlayer,
-								'agulo',
-								A2(
-									_aguspagnoni$snake_in_elm$Main$pos,
-									_elm_lang$core$Basics$toFloat(4) * _aguspagnoni$snake_in_elm$Main$segmentDim,
-									0)),
-							_1: A2(
-								_aguspagnoni$snake_in_elm$Main$initPlayer,
-								'gabo',
-								A2(
-									_aguspagnoni$snake_in_elm$Main$pos,
-									_elm_lang$core$Basics$toFloat(-4) * _aguspagnoni$snake_in_elm$Main$segmentDim,
-									0))
-						}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+		var _p17 = model;
+		if (_p17.ctor === 'NotStarted') {
+			var _p18 = msg;
+			if (_p18.ctor === 'KeyPress') {
+				var _p19 = _elm_lang$core$Char$fromCode(_p18._0);
+				switch (_p19.valueOf()) {
+					case '1':
+						return _aguspagnoni$snake_in_elm$Main$startGameWithDifficulty(_aguspagnoni$snake_in_elm$Main$Easy);
+					case '2':
+						return _aguspagnoni$snake_in_elm$Main$startGameWithDifficulty(_aguspagnoni$snake_in_elm$Main$Medium);
+					case '3':
+						return _aguspagnoni$snake_in_elm$Main$startGameWithDifficulty(_aguspagnoni$snake_in_elm$Main$Hard);
+					default:
+						return _aguspagnoni$snake_in_elm$Main$startGameWithDifficulty(_aguspagnoni$snake_in_elm$Main$Easy);
+				}
 			} else {
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			}
 		} else {
-			var _p21 = _p16._0._1;
-			var _p20 = _p16._0._0;
-			var _p18 = msg;
-			if (_p18.ctor === 'KeyPress') {
-				var _p19 = A2(
+			var _p24 = _p17._1._1;
+			var _p23 = _p17._1._0;
+			var _p22 = _p17._0;
+			var _p20 = msg;
+			if (_p20.ctor === 'KeyPress') {
+				var _p21 = A2(
 					_aguspagnoni$snake_in_elm$Main$getNewDirection,
-					_p18._0,
-					{ctor: '_Tuple2', _0: _p20, _1: _p21});
-				var newDir = _p19._0;
-				var player = _p19._1;
+					_p20._0,
+					{ctor: '_Tuple2', _0: _p23, _1: _p24});
+				var newDir = _p21._0;
+				var player = _p21._1;
 				var newPlayer = _elm_lang$core$Native_Utils.update(
 					player,
 					{direction: newDir});
-				var p1New = _elm_lang$core$Native_Utils.eq(player.head, _p20.head) ? newPlayer : _p20;
-				var p2New = _elm_lang$core$Native_Utils.eq(player.head, _p21.head) ? newPlayer : _p21;
+				var p1New = _elm_lang$core$Native_Utils.eq(player.head, _p23.head) ? newPlayer : _p23;
+				var p2New = _elm_lang$core$Native_Utils.eq(player.head, _p24.head) ? newPlayer : _p24;
 				return {
 					ctor: '_Tuple2',
-					_0: _aguspagnoni$snake_in_elm$Main$Started(
+					_0: A2(
+						_aguspagnoni$snake_in_elm$Main$Started,
+						_p22,
 						{ctor: '_Tuple2', _0: p1New, _1: p2New}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			} else {
-				var newTail2 = A2(_elm_lang$core$List_ops['::'], _p21.head, _p21.tail);
-				var newTail1 = A2(_elm_lang$core$List_ops['::'], _p20.head, _p20.tail);
-				var newHead2 = A2(_aguspagnoni$snake_in_elm$Main$getNewSegment, _p21.head, _p21.direction);
+				var newTail2 = A2(_elm_lang$core$List_ops['::'], _p24.head, _p24.tail);
+				var newTail1 = A2(_elm_lang$core$List_ops['::'], _p23.head, _p23.tail);
+				var newHead2 = A2(_aguspagnoni$snake_in_elm$Main$getNewSegment, _p24.head, _p24.direction);
 				var p2$ = _elm_lang$core$Native_Utils.update(
-					_p21,
+					_p24,
 					{head: newHead2, tail: newTail2});
-				var newHead1 = A2(_aguspagnoni$snake_in_elm$Main$getNewSegment, _p20.head, _p20.direction);
+				var newHead1 = A2(_aguspagnoni$snake_in_elm$Main$getNewSegment, _p23.head, _p23.direction);
 				var p1$ = _elm_lang$core$Native_Utils.update(
-					_p20,
+					_p23,
 					{head: newHead1, tail: newTail1});
 				var gameOver1 = A2(_aguspagnoni$snake_in_elm$Main$isGameOver, p1$, p2$);
 				var gameOver2 = A2(_aguspagnoni$snake_in_elm$Main$isGameOver, p2$, p1$);
@@ -11673,7 +11706,9 @@ var _aguspagnoni$snake_in_elm$Main$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				} : {
 					ctor: '_Tuple2',
-					_0: _aguspagnoni$snake_in_elm$Main$Started(
+					_0: A2(
+						_aguspagnoni$snake_in_elm$Main$Started,
+						_p22,
 						{ctor: '_Tuple2', _0: p1$, _1: p2$}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				});
@@ -11687,8 +11722,8 @@ var _aguspagnoni$snake_in_elm$Main$Tick = function (a) {
 	return {ctor: 'Tick', _0: a};
 };
 var _aguspagnoni$snake_in_elm$Main$subscriptions = function (model) {
-	var _p22 = model;
-	if (_p22.ctor === 'NotStarted') {
+	var _p25 = model;
+	if (_p25.ctor === 'NotStarted') {
 		return _elm_lang$keyboard$Keyboard$presses(_aguspagnoni$snake_in_elm$Main$KeyPress);
 	} else {
 		return _elm_lang$core$Platform_Sub$batch(
@@ -11697,7 +11732,8 @@ var _aguspagnoni$snake_in_elm$Main$subscriptions = function (model) {
 					_elm_lang$keyboard$Keyboard$presses(_aguspagnoni$snake_in_elm$Main$KeyPress),
 					A2(
 					_elm_lang$core$Time$every,
-					_elm_lang$core$Time$inMilliseconds(100),
+					_elm_lang$core$Time$inMilliseconds(
+						_aguspagnoni$snake_in_elm$Main$speedFor(_p25._0)),
 					_aguspagnoni$snake_in_elm$Main$Tick)
 				]));
 	}
