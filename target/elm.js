@@ -11351,11 +11351,11 @@ var _aguspagnoni$snake_in_elm$Main$isGameOver = F2(
 						[p2.head]),
 					p2.tail))) || ((_elm_lang$core$Native_Utils.cmp(
 			_elm_lang$core$Basics$fst(p1.head),
-			(0 - _aguspagnoni$snake_in_elm$Main$borderSize) + (_aguspagnoni$snake_in_elm$Main$width / 2)) > 0) || ((_elm_lang$core$Native_Utils.cmp(
+			_aguspagnoni$snake_in_elm$Main$width / 2) > 0) || ((_elm_lang$core$Native_Utils.cmp(
 			_elm_lang$core$Basics$snd(p1.head),
 			(0 - _aguspagnoni$snake_in_elm$Main$borderSize) + (_aguspagnoni$snake_in_elm$Main$height / 2)) > 0) || ((_elm_lang$core$Native_Utils.cmp(
 			_elm_lang$core$Basics$fst(p1.head),
-			_aguspagnoni$snake_in_elm$Main$borderSize - (_aguspagnoni$snake_in_elm$Main$width / 2)) < 0) || (_elm_lang$core$Native_Utils.cmp(
+			(0 - _aguspagnoni$snake_in_elm$Main$width) / 2) < 0) || (_elm_lang$core$Native_Utils.cmp(
 			_elm_lang$core$Basics$snd(p1.head),
 			_aguspagnoni$snake_in_elm$Main$borderSize - (_aguspagnoni$snake_in_elm$Main$height / 2)) < 0))));
 	});
@@ -11368,7 +11368,7 @@ var _aguspagnoni$snake_in_elm$Main$view = function (model) {
 			var wholeText = A2(
 				_elm_lang$core$Basics_ops['++'],
 				announceWinner,
-				A2(_elm_lang$core$Basics_ops['++'], '\npress SPACE to start', '\n\n Controls: \n P1: a,w,d,s\n P2: j,i,l,k'));
+				A2(_elm_lang$core$Basics_ops['++'], '\npress 1,2 or 3 to start with different difficulties', '\n\n Controls: \n P1: a,w,d,s\n P2: j,i,l,k'));
 			return _elm_lang$core$Native_List.fromArray(
 				[
 					A2(_aguspagnoni$snake_in_elm$Main$txt, wholeText, _aguspagnoni$snake_in_elm$Main$textColor)
@@ -11518,7 +11518,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Up, _aguspagnoni$snake_in_elm$Main$Down]),
 						_1: _aguspagnoni$snake_in_elm$Main$Left,
-						_2: _p15
+						_2: _p16
 					};
 				case 'w':
 					return {
@@ -11526,7 +11526,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Left, _aguspagnoni$snake_in_elm$Main$Right]),
 						_1: _aguspagnoni$snake_in_elm$Main$Up,
-						_2: _p15
+						_2: _p16
 					};
 				case 'd':
 					return {
@@ -11534,7 +11534,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Up, _aguspagnoni$snake_in_elm$Main$Down]),
 						_1: _aguspagnoni$snake_in_elm$Main$Right,
-						_2: _p15
+						_2: _p16
 					};
 				case 's':
 					return {
@@ -11542,7 +11542,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Left, _aguspagnoni$snake_in_elm$Main$Right]),
 						_1: _aguspagnoni$snake_in_elm$Main$Down,
-						_2: _p15
+						_2: _p16
 					};
 				case 'j':
 					return {
@@ -11550,7 +11550,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Up, _aguspagnoni$snake_in_elm$Main$Down]),
 						_1: _aguspagnoni$snake_in_elm$Main$Left,
-						_2: _p16
+						_2: _p15
 					};
 				case 'i':
 					return {
@@ -11558,7 +11558,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Left, _aguspagnoni$snake_in_elm$Main$Right]),
 						_1: _aguspagnoni$snake_in_elm$Main$Up,
-						_2: _p16
+						_2: _p15
 					};
 				case 'l':
 					return {
@@ -11566,7 +11566,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Up, _aguspagnoni$snake_in_elm$Main$Down]),
 						_1: _aguspagnoni$snake_in_elm$Main$Right,
-						_2: _p16
+						_2: _p15
 					};
 				case 'k':
 					return {
@@ -11574,7 +11574,7 @@ var _aguspagnoni$snake_in_elm$Main$getNewDirection = F2(
 						_0: _elm_lang$core$Native_List.fromArray(
 							[_aguspagnoni$snake_in_elm$Main$Left, _aguspagnoni$snake_in_elm$Main$Right]),
 						_1: _aguspagnoni$snake_in_elm$Main$Down,
-						_2: _p16
+						_2: _p15
 					};
 				default:
 					return {
@@ -11614,14 +11614,14 @@ var _aguspagnoni$snake_in_elm$Main$startGameWithDifficulty = function (difficult
 				ctor: '_Tuple2',
 				_0: A2(
 					_aguspagnoni$snake_in_elm$Main$initPlayer,
-					'P1',
+					'2nd player',
 					A2(
 						_aguspagnoni$snake_in_elm$Main$pos,
 						_elm_lang$core$Basics$toFloat(4) * _aguspagnoni$snake_in_elm$Main$segmentDim,
 						0)),
 				_1: A2(
 					_aguspagnoni$snake_in_elm$Main$initPlayer,
-					'P2',
+					'1st player',
 					A2(
 						_aguspagnoni$snake_in_elm$Main$pos,
 						_elm_lang$core$Basics$toFloat(-4) * _aguspagnoni$snake_in_elm$Main$segmentDim,
@@ -11653,7 +11653,7 @@ var _aguspagnoni$snake_in_elm$Main$update = F2(
 					case '3':
 						return _aguspagnoni$snake_in_elm$Main$startGameWithDifficulty(_aguspagnoni$snake_in_elm$Main$Hard);
 					default:
-						return _aguspagnoni$snake_in_elm$Main$startGameWithDifficulty(_aguspagnoni$snake_in_elm$Main$Easy);
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			} else {
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
