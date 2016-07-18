@@ -154,8 +154,8 @@ startGameWithDifficulty : Difficulty -> (Model, Cmd Msg)
 startGameWithDifficulty difficulty =
   (Started difficulty
     (
-      (initPlayer "1st player" (pos (toFloat 4*segmentDim) 0)),
-      (initPlayer "2nd player" (pos (toFloat -4*segmentDim) 0))),
+      (initPlayer "2st player" (pos (toFloat 4*segmentDim) 0)),
+      (initPlayer "1nd player" (pos (toFloat -4*segmentDim) 0))),
       Cmd.none
     )
 
@@ -177,15 +177,15 @@ getNewDirection keyCode (p1, p2) =
   let (changeableDirs, newDir, playerTriggered) =
     case Char.fromCode keyCode of
       --player 1
-      'a' -> ([ Up, Down ], Left, p1)
-      'w' -> ([ Left, Right ], Up, p1)
-      'd' -> ([ Up, Down ], Right, p1)
-      's' -> ([ Left, Right ], Down, p1)
+      'a' -> ([ Up, Down ], Left, p2)
+      'w' -> ([ Left, Right ], Up, p2)
+      'd' -> ([ Up, Down ], Right, p2)
+      's' -> ([ Left, Right ], Down, p2)
       --player 2
-      'j' -> ([ Up, Down ], Left, p2)
-      'i' -> ([ Left, Right ], Up, p2)
-      'l' -> ([ Up, Down ], Right, p2)
-      'k' -> ([ Left, Right ], Down, p2)
+      'j' -> ([ Up, Down ], Left, p1)
+      'i' -> ([ Left, Right ], Up, p1)
+      'l' -> ([ Up, Down ], Right, p1)
+      'k' -> ([ Left, Right ], Down, p1)
       _  -> ([], p1.direction, p1)
   in
     if List.any ((==) playerTriggered.direction) changeableDirs
