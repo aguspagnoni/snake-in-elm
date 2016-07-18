@@ -154,8 +154,8 @@ startGameWithDifficulty : Difficulty -> (Model, Cmd Msg)
 startGameWithDifficulty difficulty =
   (Started difficulty
     (
-      (initPlayer "2st player" (pos (toFloat 4*segmentDim) 0)),
-      (initPlayer "1nd player" (pos (toFloat -4*segmentDim) 0))),
+      (initPlayer "2nd player" (pos (toFloat 4*segmentDim) 0)),
+      (initPlayer "1st player" (pos (toFloat -4*segmentDim) 0))),
       Cmd.none
     )
 
@@ -203,9 +203,9 @@ getNewSegment (x, y) direction =
 isGameOver : Player -> Player -> Bool
 isGameOver p1 p2 =
   List.any ((==) p1.head) (p1.tail++[p2.head]++p2.tail)   -- eat itself or other player
-  || fst p1.head > (width / 2)              -- hit right
+  || fst p1.head > (width / 2)                            -- hit right
   || snd p1.head > (-borderSize + height / 2)             -- hit top
-  || fst p1.head < (-width / 2)                 -- hit left
+  || fst p1.head < (-width / 2)                           -- hit left
   || snd p1.head < (borderSize-height / 2)                -- hit bottom
 
 shortName : String -> String
